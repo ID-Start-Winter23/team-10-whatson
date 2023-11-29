@@ -22,3 +22,33 @@ class CustomTheme(Base):
             color_accent_soft=lightblue,
             border_color_accent_subdued=lightblue,
         )
+
+custom_css = """
+body > gradio-app > div {
+    background-image: url("https://i.ibb.co/G9pHv6k/tiled-background.png");
+    background-size: 200px 117px;
+    padding: 0;
+    margin: 0;
+}
+
+#component-3 > div {
+    background-image: none;
+    background-color: white;
+}
+
+#component-3 > div > div{
+    background-image: none;
+    background-color: white;
+}
+
+#component-1 > div.svelte-1ed2p3z > div > span > h1 {
+    visibility: hidden;
+}
+
+#component-1 > div.svelte-1ed2p3z > div {
+    background-image: url(https://i.ibb.co/LYnNtBV/Der-KI-Kurier-Upload.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100px 100px;
+}
+"""
