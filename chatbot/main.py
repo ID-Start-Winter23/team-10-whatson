@@ -7,6 +7,12 @@ from theme import CustomTheme
 from theme import custom_css
 
 storage_directory = "./storage"
+Beispielfragen=[
+    ['Zeig mir aktuelle Nachrichten'],
+    ['Was sind die neusten innenpolitischen Ereignisse?'],
+    ['Sage mir aktuelle außenpolitische Neuigkeiten']]
+
+
 
 # check if storage already exists
 if not os.path.exists(storage_directory):
@@ -20,7 +26,6 @@ else:
     storage_context = StorageContext.from_defaults(persist_dir=storage_directory)
     index = load_index_from_storage(storage_context)
 
-
 def response(message, history):
 
     query_engine = index.as_query_engine()
@@ -31,19 +36,29 @@ def response(message, history):
 
 def main():
     openai.api_key = os.environ["OPENAI_API_KEY"]
-
     custom_theme = CustomTheme()
 
-    chatbot = gr.ChatInterface(
-        title="Pressed Bot",
+    chat_interface = gr.ChatInterface(
         fn=response,
+        theme=custom_theme,
         retry_btn=None,
         undo_btn=None,
-        theme=custom_theme,
-        css=custom_css
-    )
-    chatbot.launch(inbrowser=True)
+        clear_btn=None,
+        textbox=gr.Textbox(placeholder="Frage mich etwas..."),
+        examples=Beispielfragen,
+        css=custom_css,)
 
+
+    # blocks
+    with gr.Blocks(theme=custom_theme, title="Whatson") as chatbot:
+        with gr.Column(theme=custom_theme):
+            with gr.Row(theme=custom_theme):
+                gr.Image("avatar-vorläufig.png",scale=0.15, show_label=False, show_download_button=False) # Avatar wird noch aktualisiert!!
+                gr.Dropdown(["Innenpolitik Deutschlands", "Europa", "Amerika", "Afrika", "Asien", "Ozeanien"], label="Themenauswahl", multiselect=True, ),
+        chat_interface.render(),
+
+
+    chatbot.launch(inbrowser=True)
 
 if __name__ == "__main__":
     main()

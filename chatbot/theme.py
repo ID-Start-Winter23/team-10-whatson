@@ -1,27 +1,26 @@
 from gradio.themes.base import Base
-import gradio as gr
+
 
 class CustomTheme(Base):
 
     def __init__(self):
-        super().__init__(
-            font=[gr.themes.GoogleFont("Lora Regular")])
+        super().__init__()
 
         white = "#FFFFFF"
-        lightblue = "#2D7BF0"
-        lightgray = "#D9D9D9"
+        blue = "#2D7BF0"
+        grey = "#d9d9d9"
 
-        new_background = "background_test.png"
+
         super().set(
-            body_background_fill=new_background,
-            button_primary_background_fill=lightblue,
+            body_background_fill=white,
+            button_primary_background_fill=blue,
             button_primary_text_color=white,
-            button_secondary_background_fill=lightgray,
-            button_secondary_text_color=white,
+            button_secondary_background_fill=grey,
+            button_secondary_text_color=blue,
             button_secondary_border_color=white,
-            color_accent_soft=lightblue,
-            border_color_accent_subdued=lightblue,
-        )
+            color_accent_soft=white,
+            border_color_accent_subdued=blue,)
+
 
 custom_css = """
 body > gradio-app > div {
