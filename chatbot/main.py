@@ -46,14 +46,15 @@ def main():
         clear_btn=None,
         textbox=gr.Textbox(placeholder="Frage mich etwas..."),
         examples=Beispielfragen,
-        css=custom_css,)
+        css=custom_css,
+        )
 
 
     # blocks
     with gr.Blocks(theme=custom_theme, title="Whatson") as chatbot:
         with gr.Column(theme=custom_theme):
             with gr.Row(theme=custom_theme):
-                gr.Image("avatar-vorläufig.png",scale=0.15, show_label=False, show_download_button=False) # Avatar wird noch aktualisiert!!
+                gr.Image("ui_elements/avatar-vorläufig.png",scale=0.15, show_label=False, show_download_button=False) # Avatar wird noch aktualisiert!!
                 gr.Dropdown(["Innenpolitik Deutschlands", "Europa", "Amerika", "Afrika", "Asien", "Ozeanien"], label="Themenauswahl", multiselect=True, ),
         chat_interface.render(),
 
