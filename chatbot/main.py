@@ -7,6 +7,7 @@ from theme import CustomTheme
 from theme import custom_css
 
 storage_directory = "./storage"
+
 Beispielfragen=[
     ['Zeig mir aktuelle Nachrichten'],
     ['Was sind die neusten innenpolitischen Ereignisse?'],
@@ -36,6 +37,7 @@ def response(message, history):
 
 def main():
     openai.api_key = os.environ["OPENAI_API_KEY"]
+
     custom_theme = CustomTheme()
 
     chat_interface = gr.ChatInterface(
@@ -47,8 +49,9 @@ def main():
         textbox=gr.Textbox(placeholder="Frage mich etwas..."),
         examples=Beispielfragen,
         css=custom_css,
+        chatbot = gr.Chatbot(
+        avatar_images=["ui_elements/avatar_user_small.png", "ui_elements/avatar_bot_small.png"])
         )
-
 
     # blocks
     with gr.Blocks(theme=custom_theme, title="Whatson") as chatbot:
@@ -57,7 +60,6 @@ def main():
                 gr.Image("ui_elements/avatar-vorläufig.png",scale=0.15, show_label=False, show_download_button=False) # Avatar wird noch aktualisiert!!
                 gr.Dropdown(["Innenpolitik Deutschlands", "Europa", "Amerika", "Afrika", "Asien", "Ozeanien"], label="Themenauswahl", multiselect=True, ),
         chat_interface.render(),
-
 
     chatbot.launch(inbrowser=True)
 
