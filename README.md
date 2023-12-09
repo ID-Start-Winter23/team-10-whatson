@@ -1,3 +1,3 @@
-# Pressed-Bot
+# Whatson
 
-Beantwortet Fragen aktuellen und vergangenen Nachrichten aus dem Feld Politik
+Informiert Nutzer über aktuelle Nachrichten und ergänzendes Hintergrundwissen aus dem Themengebiet Politik.
