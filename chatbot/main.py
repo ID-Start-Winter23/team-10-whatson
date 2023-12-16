@@ -37,7 +37,7 @@ def response(message, history):
 
 def main():
     openai.api_key = os.environ["OPENAI_API_KEY"]
-
+    
     custom_theme = CustomTheme()
 
     chat_interface = gr.ChatInterface(
@@ -50,14 +50,14 @@ def main():
         examples=Beispielfragen,
         css=custom_css,
         chatbot = gr.Chatbot(
-        avatar_images=["ui_elements/avatar_user_small.png", "ui_elements/avatar_bot_small.png"])
+        avatar_images=["ui_elements/avatar_user.png", "ui_elements/avatar_bot.png"])
         )
 
     # blocks
-    with gr.Blocks(theme=custom_theme, title="Whatson") as chatbot:
+    with gr.Blocks(theme=custom_theme, title="Whatson", css=custom_css) as chatbot:
         with gr.Column(theme=custom_theme):
             with gr.Row(theme=custom_theme):
-                gr.Image("ui_elements/avatar-vorläufig.png",scale=0.15, show_label=False, show_download_button=False) # Avatar wird noch aktualisiert!!
+                gr.Image("ui_elements/avatar-vorlaeufig.png",scale=0.1, show_label=False, show_download_button=False) # Avatar wird noch aktualisiert!!
                 gr.Dropdown(["Innenpolitik Deutschlands", "Europa", "Amerika", "Afrika", "Asien", "Ozeanien"], label="Themenauswahl", multiselect=True, ),
         chat_interface.render(),
 
