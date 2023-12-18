@@ -49,8 +49,10 @@ def main():
         #examples=Beispielfragen,
         css=custom_css,
         chatbot = gr.Chatbot(
-        avatar_images=["ui_elements/avatar_user1.png", "ui_elements/avatar_bot1.png"]
-        ))
+            avatar_images=["ui_elements/avatar_user.png", "ui_elements/avatar_bot.png"],
+            value=[(None, "Willkommen 👋. Mein Name ist Whatson und ich versorge dich mit den aktuellsten politischen Nachrichten.")],
+            )
+        )
 
     # blocks
     with gr.Blocks(theme=custom_theme, title="Whatson", css=custom_css) as chatbot:
@@ -58,6 +60,7 @@ def main():
         with gr.Row(theme=custom_theme, equal_height=False):
             with gr.Column(theme=custom_theme, scale=0.1):
                 gr.Image("ui_elements/avatar_blau.png", show_label=False, show_download_button=False) # Avatar wird noch aktualisiert!!
+                gr.Markdown("Hier ist eine Anleitung:")
                 gr.Dropdown(["", "Innenpolitik Deutschlands", "Europa", "Amerika", "Afrika", "Asien", "Ozeanien"], label="Themenauswahl", multiselect=False), 
             chat_interface.render(),
             #gr.Examples(["Was sind die neusten Nachrichten?", "Was sind topaktuelle innenpolitische Ereignisse?", "Kannst du mir relevante außenpolitische Neuigkeiten zeigen?"], inputs=textbox)
