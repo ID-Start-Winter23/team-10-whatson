@@ -33,7 +33,6 @@ custom_css = """
     --border-color-accent-subdued: var(--border-color-primary);
     --body-background-fill: #f4f1df;
     --panel-background-fill: none;
-
 }
 
 .dark{
@@ -71,7 +70,23 @@ div.svelte-1mwvhlq:not(.float){
 }
 
 .user.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar{
+    color: var(--button-secondary-text-color);
+}
+
+.primary.svelte-cmf5ev {
+    flex-grow: 0.3 !important;
+}
+
+.secondary.svelte-cmf5ev{
+    background: #DB7842;
+    flex-grow: 0.3;
     color: #ffffff;
+}
+
+.secondary.svelte-cmf5ev:hover, .secondary[disabled].svelte-cmf5ev{
+    background: #DB7842;
+    flex-grow: 0.3;
+    color: rgba(0, 0, 0, 10);
 }
 
 """
