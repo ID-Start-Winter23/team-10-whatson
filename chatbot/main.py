@@ -188,16 +188,16 @@ def main():
     with gr.Blocks(theme=custom_theme, title="Whatson", css=custom_css) as chatbot:
         with gr.Column(theme=custom_theme):
             with gr.Row(theme=custom_theme, equal_height=False):
-                gr.Image("ui_elements/logo-avatar.png", show_label=False, show_download_button=False, height=200, width=500)
+                gr.Image("ui_elements/logo-avatar.png", show_label=False, show_download_button=False, scale=0.3)
             with gr.Row(theme=custom_theme):
-                with gr.Column(theme=custom_theme, scale=0.6):
+                with gr.Column(theme=custom_theme, scale=0.4):
                     dropdown = gr.Dropdown(["", "Innenpolitik Deutschlands", "Europa", "Amerika", "Afrika", "Asien", "Ozeanien"], label="Themenauswahl", multiselect=False)
 
                     top_news = gr.Textbox(
-                        lines=25,
+                        lines=22,
                         interactive=False,
                         label="",
-                        value="Du kannst mich zu Nachrichten über die Themen ... befragen"
+                        value="Du kannst mich zu Nachrichten der auswählbaren Themen befragen"
                     )
 
                     dropdown.change(fn=dropdown_selection, inputs=dropdown, outputs=top_news)

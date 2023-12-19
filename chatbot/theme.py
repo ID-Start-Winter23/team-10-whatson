@@ -17,12 +17,15 @@ class CustomTheme(Base):
             button_primary_text_color=white, #Submit-Button-Text-Color
             button_secondary_background_fill=white, #Themenauswahl-Button-Color
             button_secondary_text_color=blue, #Examples-Text-Color
-            button_secondary_border_color=beige, #? -> nicht genutzt?
-            checkbox_label_text_color=beige,
-            color_accent_soft=blue,
-            background_fill_primary=white,
-            checkbox_label_padding=None,
-            input_background_fill=white,
+            button_secondary_border_color=red, #? -> nicht genutzt?
+            checkbox_label_text_color=beige, #
+            color_accent=red, # Beim Generieren der Nachricht wird Border diese Farbe
+            color_accent_soft=red, # z.B. Buttons-Hover, Nutzer-Background-Farbe
+            background_fill_primary=white, # wird nicht genutzt?
+            background_fill_secondary=blue, # ?
+            checkbox_label_padding=None, # Padding beim Dropdown verkleinert
+            input_background_fill=white, #
+            body_text_color=blue, #
             )
 
 
@@ -30,7 +33,8 @@ custom_css = """
 
 :root {
     --font: 'Source Code Pro', monospace;
-    --border-color-accent-subdued: var(--border-color-primary);
+    --border-color-accent-subdued: var(--neutral-200);
+    --border-color-accent: var(--neutral-200);
     --body-background-fill: #f4f1df;
     --panel-background-fill: none;
 }
@@ -39,54 +43,60 @@ custom_css = """
     --font: 'Source Code Pro', monospace;
 }
 
+/* Message-Form und Länge an Text angepasst */
 .message.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar {
     display: auto;
     width: auto;
     max-width: 75%
 }
 
+/* Dropdown Padding verkleinert */
 .compact.svelte-vt1mxs, .panel.svelte-vt1mxs{
     padding: 0px;
 }
 
+/* Label Chatbot Textbox hidden */
 div.svelte-1mwvhlq:not(.float){
     visibility: hidden;
-}
-
-.gallery-item.svelte-13hsdno.svelte-13hsdno.svelte-13hsdno {
-    background-color: white
 }
 
 .show-api.svelte-1ax1toq.svelte-1ax1toq.svelte-1ax1toq:hover {
     color: var(--button-secondary-text-color);
 }
 
+/* ? */
 .built-with.svelte-1ax1toq.svelte-1ax1toq.svelte-1ax1toq:hover {
     color: var(--button-secondary-text-color);
 }
 
-.message.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar{
+/* Text angepasst */
+.message.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar {
     line-height: var(--line-sm);
 }
 
-.user.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar{
-    color: var(--button-secondary-text-color);
-}
-
+/* Submit-Button */
 .primary.svelte-cmf5ev {
     flex-grow: 0.3 !important;
 }
 
-.secondary.svelte-cmf5ev{
-    background: #DB7842;
-    flex-grow: 0.3;
-    color: #ffffff;
+/* ? */
+.panel.svelte-vt1mxs {
+    flex-grow: 0 !important;
 }
 
-.secondary.svelte-cmf5ev:hover, .secondary[disabled].svelte-cmf5ev{
-    background: #DB7842;
-    flex-grow: 0.3;
-    color: rgba(0, 0, 0, 10);
+/* Themen aus Dropdown Background Color */
+.container.svelte-tq78c3 .wrap.svelte-tq78c3 {
+    background-color: #f4f1df;
+}
+
+/* Chatbot Message Color */
+.message.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar{
+    color: white;
+}
+
+
+.user.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar{
+    color: black;
 }
 
 """
