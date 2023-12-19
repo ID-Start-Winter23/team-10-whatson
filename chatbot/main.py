@@ -13,8 +13,7 @@ from llama_index import (
     set_global_service_context
 )
 from llama_index.llms import OpenAI
-from llama_index.text_splitter import SentenceSplitter  # woher SentenceSplitter importieren????? 
-#from llama_index.node_parser import SentenceSplitter
+from llama_index.text_splitter import SentenceSplitter
 from theme import CustomTheme
 from theme import custom_css
 
@@ -40,6 +39,7 @@ else:
     index = load_index_from_storage(storage_context)
 
 
+# Scraping: Extraktion der Schlagzeilen nach Themengebieten aus den RSS-Feeds der Tagesschau
 top_headlines_innenpolitik = scraping.get_rss('https://www.tagesschau.de/inland/innenpolitik/index~rss2.xml')
 top_headlines_europa = scraping.get_rss('https://www.tagesschau.de/ausland/europa/index~rss2.xml')
 top_headlines_amerika = scraping.get_rss('https://www.tagesschau.de/ausland/amerika/index~rss2.xml')
@@ -47,7 +47,7 @@ top_headlines_afrika = scraping.get_rss('https://www.tagesschau.de/ausland/afrik
 top_headlines_asien = scraping.get_rss('https://www.tagesschau.de/ausland/asien/index~rss2.xml')
 top_headlines_ozeanien = scraping.get_rss('https://www.tagesschau.de/ausland/ozeanien/index~rss2.xml')
 
-# Scraping
+# Sammeln aller Schlagzeilen im Dictionary top_news
 top_news = {
     "innenpolitik": top_headlines_innenpolitik,
     "europa": top_headlines_europa,
@@ -60,6 +60,7 @@ top_news = {
 parser = SentenceSplitter()
 nodes = []
 
+# Anlegen von documents und Aufteilung in nodes
 # news = Key -> (innenpolitik, europa, ...)
 for topic in top_news:
     top_headlines = top_news[topic]
@@ -90,6 +91,7 @@ service_context = ServiceContext.from_defaults(llm = llm)
 
 set_global_service_context(service_context)
 
+# Prompt Engineering: Chatbot Charakter, Tone-of-Voice
 system_prompt = (
     "You are a neutral news reporter."
     "If the provided context is not helpful you still answer the question."
@@ -103,11 +105,10 @@ context = (
     "Respond about news based on context only. \n"
     "If the user asks about general information about a news topic use ur general knowledge to answer the question!\n"    
     "Greet the user in a friendly way.\n"
-    "Always keep the user on a first-name basis.\n"
+    "Always keep the user on a first-name basis and address the user informally.\n"
     "Answer always in German and in a friendly, informative matter.\n"
     "Keep the answers short and simple.\n"
     "Tell the user in a friendly way that you can only answer questions about political news if they have questions about other topics.\n"
-    #"If the user asks a question that you cannot answer, tell them that you cannot answer the question and that they should try asking something else.\n"
     "Don't be afraid to ask the user to rephrase the question if you don't understand it.\n"
     "Don't repeat yourself.\n"
 )
@@ -119,7 +120,7 @@ chat_engine = index.as_chat_engine(
     context_template = context,
 )
 
-
+# Chatbot Antwort basierend auf Nutzeranfragen und Historie, schrittweiser Aufbau des Antworttext
 def response(message, history):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -137,7 +138,7 @@ def response(message, history):
 example_questions=[
     ['Woher stammen deine Infos?']]
 
-
+# Themenauswahl über Dropdown Menü
 def dropdown_selection(selection):
 
     if selection == "Innenpolitik Deutschlands":

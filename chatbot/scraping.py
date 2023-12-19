@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
+# Extraktion von Titel, Datum, Kurzbeschreibung und weiterführendem Link aktueller Schlagzeilen über RSS-Feeds
 def get_rss(url):
     topic = []
     try:
