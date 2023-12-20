@@ -174,10 +174,10 @@ def main():
     chat_interface = gr.ChatInterface(
         fn=response,
         theme=custom_theme,
+        css=custom_css,
         retry_btn=None,
         undo_btn=None,
         clear_btn=None,
-        css=custom_css,
         textbox=gr.Textbox(placeholder="Frage mich etwas..."),
         examples=example_questions,
         chatbot = gr.Chatbot(
@@ -187,22 +187,24 @@ def main():
 
     # blocks
     with gr.Blocks(theme=custom_theme, title="Whatson", css=custom_css) as chatbot:
-        with gr.Column(theme=custom_theme):
-            with gr.Row(theme=custom_theme, equal_height=False):
+        with gr.Column():
+            with gr.Row(equal_height=False):
                 gr.Image("ui_elements/logo-avatar.png", show_label=False, show_download_button=False, scale=0.3)
-            with gr.Row(theme=custom_theme):
-                with gr.Column(theme=custom_theme, scale=0.4):
+            with gr.Row():
+                with gr.Column(scale=0.4):
+                    gr.Radio(["Heller-Modus", "Dunkler-Mode", "Leihter-Mode"], label="Modusauswahl")
                     dropdown = gr.Dropdown(["", "Innenpolitik Deutschlands", "Europa", "Amerika", "Afrika", "Asien", "Ozeanien"], label="Themenauswahl", multiselect=False)
 
                     top_news = gr.Textbox(
-                        lines=22,
+                        lines=15,
                         interactive=False,
                         label="",
                         value="Du kannst mich zu Nachrichten der auswählbaren Themen befragen"
                     )
 
                     dropdown.change(fn=dropdown_selection, inputs=dropdown, outputs=top_news)
-                with gr.Column(theme=custom_theme):
+
+                with gr.Column():
                     chat_interface.render(),
 
     chatbot.queue()

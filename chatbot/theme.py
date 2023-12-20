@@ -31,6 +31,7 @@ class CustomTheme(Base):
 
 custom_css = """
 
+
 :root {
     --font: 'Source Code Pro', monospace;
     --border-color-accent-subdued: var(--neutral-200);
@@ -97,6 +98,8 @@ div.svelte-1mwvhlq:not(.float){
 
 .user.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar{
     color: black;
+    background-color: #ffffff;
+    border-color: #DB7842;
 }
 
 """
