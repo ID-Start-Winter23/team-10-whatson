@@ -14,8 +14,10 @@ from llama_index import (
 )
 from llama_index.llms import OpenAI
 from llama_index.text_splitter import SentenceSplitter
-from theme import CustomTheme
-from theme import custom_css
+#from theme import CustomTheme
+from LightTheme import light_css
+#from DarkTheme import dark_css
+#from LargeTheme import large_css
 
 import scraping
 
@@ -130,7 +132,7 @@ def response(message, history):
 
     output_text = ""
     for token in answer.response_gen:
-        time.sleep(0.1)
+        time.sleep(0.07)
         output_text += token
         yield output_text
 
@@ -161,7 +163,7 @@ def dropdown_selection(selection):
         output_text += f'{idx + 1}: {article["title"]}\n\n'
 
     if output_text == "":
-        output_text = "Du kannst mich zu Nachrichten über die Themen ... befragen"
+        output_text = "Mit der Themenauswahl kannst du zu ausgewählten Themen die Schlagzeilen des Tages bekommen. \n\nSuch dir ein Thema deiner Wahl aus!"
 
     return output_text
 
@@ -169,15 +171,16 @@ def dropdown_selection(selection):
 def main():
     openai.api_key = os.environ["OPENAI_API_KEY"]
     
-    custom_theme = CustomTheme()
+    #custom_theme = CustomTheme()
 
     chat_interface = gr.ChatInterface(
         fn=response,
-        theme=custom_theme,
-        css=custom_css,
+        #theme=custom_theme,
+        css=light_css,
         retry_btn=None,
         undo_btn=None,
         clear_btn=None,
+        submit_btn="➤",
         textbox=gr.Textbox(placeholder="Frage mich etwas..."),
         examples=example_questions,
         chatbot = gr.Chatbot(
@@ -186,20 +189,22 @@ def main():
         )
 
     # blocks
-    with gr.Blocks(theme=custom_theme, title="Whatson", css=custom_css) as chatbot:
+    with gr.Blocks(title="Whatson", css=light_css) as chatbot:
         with gr.Column():
             with gr.Row(equal_height=False):
                 gr.Image("ui_elements/logo-avatar.png", show_label=False, show_download_button=False, scale=0.3)
             with gr.Row():
                 with gr.Column(scale=0.4):
-                    gr.Radio(["Heller-Modus", "Dunkler-Mode", "Leihter-Mode"], label="Modusauswahl")
+                    #### Radio-Buttons für Sprint 2
+                    #gr.Radio(["Helle Ansicht", "Dunkle Ansicht", "Großer Text"], label="Modusauswahl", interactive=True, value="Helle Ansicht")
                     dropdown = gr.Dropdown(["", "Innenpolitik Deutschlands", "Europa", "Amerika", "Afrika", "Asien", "Ozeanien"], label="Themenauswahl", multiselect=False)
 
                     top_news = gr.Textbox(
                         lines=15,
+                        autoscroll=False,
                         interactive=False,
                         label="",
-                        value="Du kannst mich zu Nachrichten der auswählbaren Themen befragen"
+                        value="Mit der Themenauswahl kannst du zu ausgewählten Themen die Schlagzeilen des Tages bekommen. \n\nSuch dir ein Thema deiner Wahl aus und stelle mir dazu Fragen!"
                     )
 
                     dropdown.change(fn=dropdown_selection, inputs=dropdown, outputs=top_news)
