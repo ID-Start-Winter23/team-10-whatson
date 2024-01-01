@@ -24,59 +24,24 @@ import scraping
 import time
 import asyncio
 
-
 storage_directory = "./storage"
 
-
-# check if storage already exists
-if not os.path.exists(storage_directory):
-# load the documents and create the index
-    documents = SimpleDirectoryReader(input_dir="data").load_data()
-    index = VectorStoreIndex.from_documents(documents)
-# store it for later
-    index.storage_context.persist(persist_dir=storage_directory)
-else:
-# load the existing index
-    storage_context = StorageContext.from_defaults(persist_dir=storage_directory)
-    index = load_index_from_storage(storage_context)
-
-
 # Scraping: Extraktion der Schlagzeilen nach Themengebieten aus den RSS-Feeds der Tagesschau
-top_headlines_innenpolitik = scraping.get_rss('https://www.tagesschau.de/inland/innenpolitik/index~rss2.xml')
-top_headlines_europa = scraping.get_rss('https://www.tagesschau.de/ausland/europa/index~rss2.xml')
-top_headlines_amerika = scraping.get_rss('https://www.tagesschau.de/ausland/amerika/index~rss2.xml')
-top_headlines_afrika = scraping.get_rss('https://www.tagesschau.de/ausland/afrika/index~rss2.xml')
-top_headlines_asien = scraping.get_rss('https://www.tagesschau.de/ausland/asien/index~rss2.xml')
-top_headlines_ozeanien = scraping.get_rss('https://www.tagesschau.de/ausland/ozeanien/index~rss2.xml')
-
-# Sammeln aller Schlagzeilen im Dictionary top_news
-top_news = {
-    "innenpolitik": top_headlines_innenpolitik,
-    "europa": top_headlines_europa,
-    "amerika": top_headlines_amerika,
-    "afrika": top_headlines_afrika,
-    "asien": top_headlines_asien,
-    "ozeanien": top_headlines_ozeanien
-}
+top_headlines = scraping.get_rss('https://www.tagesschau.de/index~rss2.xml')
 
 parser = SentenceSplitter()
 nodes = []
 
 # Anlegen von documents und Aufteilung in nodes
 # news = Key -> (innenpolitik, europa, ...)
-for topic in top_news:
-    top_headlines = top_news[topic]
-    for article in top_headlines:
+for article in top_headlines:
         text = f'Title: {article["title"]}\n' \
                f'Datum: {article["published"]}\n' \
                f'Inhalt: {article["description"]}\n'
 
         document = Document(
             text=text,
-            metadata={
-                'Themenauswahl': topic,
-                'Link': article["link"]
-            }
+            metadata={'Link': article["link"]}
         )
 
         node = parser.get_nodes_from_documents([document])
@@ -86,9 +51,20 @@ for topic in top_news:
 
         nodes.extend(node)
 
-index = VectorStoreIndex(nodes)
+# Ausgabe der Schlagzeilen über Infobox
+output_text = ""
+for idx, article in enumerate(top_headlines):
+    output_text += f'{idx + 1}: {article["title"]}\n\n'
 
-llm = OpenAI(model="gpt-4-1106-preview", temperature=0.1)
+# create index
+index = VectorStoreIndex(nodes)
+# store it for later
+index.storage_context.persist(persist_dir="./storage")
+# load the existing index
+storage_context = StorageContext.from_defaults(persist_dir=storage_directory)
+index = load_index_from_storage(storage_context)
+
+llm = OpenAI(model="gpt-3.5-1106", temperature=0.1)
 service_context = ServiceContext.from_defaults(llm = llm)
 
 set_global_service_context(service_context)
@@ -140,34 +116,6 @@ def response(message, history):
 example_questions=[
     ['Woher stammen deine Infos?']]
 
-# Themenauswahl über Dropdown Menü
-def dropdown_selection(selection):
-
-    if selection == "Innenpolitik Deutschlands":
-        top_headlines = scraping.get_rss('https://www.tagesschau.de/inland/innenpolitik/index~rss2.xml')
-    elif selection == "Europa":
-        top_headlines = scraping.get_rss('https://www.tagesschau.de/ausland/europa/index~rss2.xml')
-    elif selection == "Amerika":
-        top_headlines = scraping.get_rss('https://www.tagesschau.de/ausland/amerika/index~rss2.xml')
-    elif selection == "Afrika":
-        top_headlines = scraping.get_rss('https://www.tagesschau.de/ausland/afrika/index~rss2.xml')
-    elif selection == "Asien":
-        top_headlines = scraping.get_rss('https://www.tagesschau.de/ausland/asien/index~rss2.xml')
-    elif selection == "Ozeanien":
-        top_headlines = scraping.get_rss('https://www.tagesschau.de/ausland/ozeanien/index~rss2.xml')
-    else:
-        top_headlines = []
-
-    output_text = ""
-    for idx, article in enumerate(top_headlines):
-        output_text += f'{idx + 1}: {article["title"]}\n\n'
-
-    if output_text == "":
-        output_text = "Mit der Themenauswahl kannst du zu ausgewählten Themen die Schlagzeilen des Tages bekommen. \n\nSuch dir ein Thema deiner Wahl aus!"
-
-    return output_text
-
-
 def main():
     openai.api_key = os.environ["OPENAI_API_KEY"]
     
@@ -197,18 +145,12 @@ def main():
                 with gr.Column(scale=0.4):
                     #### Radio-Buttons für Sprint 2
                     #gr.Radio(["Helle Ansicht", "Dunkle Ansicht", "Großer Text"], label="Modusauswahl", interactive=True, value="Helle Ansicht")
-                    dropdown = gr.Dropdown(["", "Innenpolitik Deutschlands", "Europa", "Amerika", "Afrika", "Asien", "Ozeanien"], label="Themenauswahl", multiselect=False)
-
-                    top_news = gr.Textbox(
-                        lines=15,
-                        autoscroll=False,
+                    gr.Textbox(
+                        outputs=output_text,
+                        lines=22,
                         interactive=False,
-                        label="",
-                        value="Mit der Themenauswahl kannst du zu ausgewählten Themen die Schlagzeilen des Tages bekommen. \n\nSuch dir ein Thema deiner Wahl aus und stelle mir dazu Fragen!"
+                        label=""
                     )
-
-                    dropdown.change(fn=dropdown_selection, inputs=dropdown, outputs=top_news)
-
                 with gr.Column():
                     chat_interface.render(),
 
