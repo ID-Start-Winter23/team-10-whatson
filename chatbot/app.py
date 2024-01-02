@@ -8,23 +8,39 @@ from llama_index import (
     load_index_from_storage, 
     StorageContext,
     VectorStoreIndex, 
-    SimpleDirectoryReader, 
-    download_loader, 
     set_global_service_context
 )
-from llama_index.llms import OpenAI
+#from llama_index.llms import OpenAI
 from llama_index.text_splitter import SentenceSplitter
 #from theme import CustomTheme
 from LightTheme import light_css
 #from DarkTheme import dark_css
 #from LargeTheme import large_css
 
+from llama_index.memory import ChatMemoryBuffer
+from llama_index.llms import MockLLM
+from llama_index import MockEmbedding
+import tiktoken
+from llama_index.callbacks import CallbackManager, TokenCountingHandler
+
 import scraping
 
 import time
 import asyncio
 
+# use MockLLM and MockEmbedding for testing (it's free); use OpenAI for production
+llm = MockLLM(max_tokens=56)
+embed_model = MockEmbedding(embed_dim=1536)
+
+token_counter = TokenCountingHandler(
+    tokenizer=tiktoken.encoding_for_model("gpt-3.5-turbo-1106").encode
+)
+
+callback_manager = CallbackManager([token_counter])
+
 storage_directory = "./storage"
+print("Current time: ", str(time.time()))
+print("Last modified: ", str(os.path.getmtime(storage_directory)))
 
 # Scraping: Extraktion der Schlagzeilen nach Themengebieten aus den RSS-Feeds der Tagesschau
 top_headlines = scraping.get_rss('https://www.tagesschau.de/index~rss2.xml')
@@ -35,39 +51,59 @@ nodes = []
 # Anlegen von documents und Aufteilung in nodes
 # news = Key -> (innenpolitik, europa, ...)
 for article in top_headlines:
-        text = f'Title: {article["title"]}\n' \
-               f'Datum: {article["published"]}\n' \
-               f'Inhalt: {article["description"]}\n'
+    text = f'Title: {article["title"]}\n' \
+           f'Datum: {article["published"]}\n' \
+           f'Inhalt: {article["description"]}\n'
 
-        document = Document(
-            text=text,
-            metadata={'Link': article["link"]}
-        )
+    document = Document(
+        text=text,
+        metadata={'Link': article["link"]}
+    )
 
-        node = parser.get_nodes_from_documents([document])
+    node = parser.get_nodes_from_documents([document])
 
-        print(40*"#")
-        print(node)
+    print(40*"#")
+    print(node)
 
-        nodes.extend(node)
+    nodes.extend(node)
 
 # Ausgabe der Schlagzeilen über Infobox
-output_text = ""
+news_text = ""
 for idx, article in enumerate(top_headlines):
-    output_text += f'{idx + 1}: {article["title"]}\n\n'
+    news_text += f'{idx + 1}: {article["title"]}\n\n'
 
-# create index
-index = VectorStoreIndex(nodes)
-# store it for later
-index.storage_context.persist(persist_dir="./storage")
-# load the existing index
-storage_context = StorageContext.from_defaults(persist_dir=storage_directory)
-index = load_index_from_storage(storage_context)
 
-llm = OpenAI(model="gpt-3.5-1106", temperature=0.1)
-service_context = ServiceContext.from_defaults(llm = llm)
+def check_rss_feed_and_create_index():
+    # check if RSS feed was downloaded in the last 7 days
+    if not os.path.exists(storage_directory) or os.path.getmtime(storage_directory) < (time.time() - 60 * 60 * 24 * 7):
+        # use nodes from RSS feed, create index and store it in storage folder
+        index = VectorStoreIndex(nodes)
+        # store it for later
+        index.storage_context.persist(persist_dir="./storage")
 
-set_global_service_context(service_context)
+        print(
+            "Embedding Tokens Index: ",
+            token_counter.total_embedding_token_count,
+            "\n",
+            "LLM Prompt Tokens Index: ",
+            token_counter.prompt_llm_token_count,
+            "\n",
+            "LLM Completion Tokens Index: ",
+            token_counter.completion_llm_token_count,
+            "\n",
+            "Total LLM Token Count Index: ",
+            token_counter.total_llm_token_count,
+            "\n",
+        )
+        token_counter.reset_counts()
+
+    else:
+        print("Index already exists.")
+        storage_context = StorageContext.from_defaults(persist_dir=storage_directory)
+        index = load_index_from_storage(storage_context)
+    
+    return index
+
 
 # Prompt Engineering: Chatbot Charakter, Tone-of-Voice
 system_prompt = (
@@ -91,11 +127,21 @@ context = (
     "Don't repeat yourself.\n"
 )
 
+index = check_rss_feed_and_create_index()
+
+#llm = OpenAI(model="gpt-3.5-turbo-1106", temperature=0.1)
+
+service_context = ServiceContext.from_defaults(llm = llm, embed_model=embed_model, callback_manager=callback_manager)
+set_global_service_context(service_context)
+
+memory = ChatMemoryBuffer.from_defaults(token_limit=1024)
+
 chat_engine = index.as_chat_engine(
-    similarity_top_k = 5,
+    similarity_top_k = 2,
     chat_mode = "context",
     system_prompt = system_prompt,
     context_template = context,
+    memory = memory,
 )
 
 # Chatbot Antwort basierend auf Nutzeranfragen und Historie, schrittweiser Aufbau des Antworttext
@@ -103,23 +149,49 @@ def response(message, history):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    chat_history = chat_engine.chat_history
-    answer = chat_engine.stream_chat(message, chat_history)
+    answer = chat_engine.stream_chat(message)
+    print("Message: ", message)
+    print("History: ", history)
+    print("Answer: ", answer)
+
 
     output_text = ""
     for token in answer.response_gen:
-        time.sleep(0.07)
+        time.sleep(0.05)
         output_text += token
         yield output_text
 
+    print(output_text)
+
+    print(
+        "Embedding Tokens response: ",
+        token_counter.total_embedding_token_count,
+        "\n",
+        "LLM Prompt Tokens response: ",
+        token_counter.prompt_llm_token_count,
+        "\n",
+        "LLM Completion Tokens response: ",
+        token_counter.completion_llm_token_count,
+        "\n",
+        "Total LLM Token Count response: ",
+        token_counter.total_llm_token_count,
+        "\n",
+    )
+
+    # try to reduce history size and cost
+    chat_engine.reset()
+
 
 example_questions=[
-    ['Woher stammen deine Infos?']]
+    'Woher stammen deine Infos?', 
+    'Was ist heute passiert?',
+    'Was ist in Deutschland passiert?',
+    'Was ist in der Welt passiert?']
+
+
 
 def main():
-    openai.api_key = os.environ["OPENAI_API_KEY"]
-    
-    #custom_theme = CustomTheme()
+    #openai.api_key = os.environ["OPENAI_API_KEY"]
 
     chat_interface = gr.ChatInterface(
         fn=response,
@@ -146,7 +218,7 @@ def main():
                     #### Radio-Buttons für Sprint 2
                     #gr.Radio(["Helle Ansicht", "Dunkle Ansicht", "Großer Text"], label="Modusauswahl", interactive=True, value="Helle Ansicht")
                     gr.Textbox(
-                        outputs=output_text,
+                        value=news_text,
                         lines=22,
                         interactive=False,
                         label=""
