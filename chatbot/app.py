@@ -40,7 +40,7 @@ callback_manager = CallbackManager([token_counter])
 
 storage_directory = "./storage"
 print("Current time: ", str(time.time()))
-print("Last modified: ", str(os.path.getmtime(storage_directory)))
+# print("Last modified: ", str(os.path.getmtime(storage_directory)))
 
 # Scraping: Extraktion der Schlagzeilen nach Themengebieten aus den RSS-Feeds der Tagesschau
 top_headlines = scraping.get_rss('https://www.tagesschau.de/index~rss2.xml')
@@ -75,7 +75,14 @@ for idx, article in enumerate(top_headlines):
 
 def check_rss_feed_and_create_index():
     # check if RSS feed was downloaded in the last 7 days
-    if not os.path.exists(storage_directory) or os.path.getmtime(storage_directory) < (time.time() - 60 * 60 * 24 * 7):
+    generate_index = 0
+    if not os.path.exists(storage_directory):
+        generate_index = 1
+    else:
+        if os.path.getmtime(storage_directory) < (time.time() - 60 * 60 * 24 * 7):
+            generate_index = 1
+    
+    if generate_index:
         # use nodes from RSS feed, create index and store it in storage folder
         index = VectorStoreIndex(nodes)
         # store it for later
