@@ -69,7 +69,7 @@ for article in top_headlines:
 
 # Ausgabe der Schlagzeilen über Infobox
 news_text = ""
-for idx, article in enumerate(top_headlines):
+for idx, article in enumerate(top_headlines[:10]):
     news_text += f'{idx + 1}: {article["title"]}\n\n'
 
 
@@ -128,8 +128,10 @@ context = (
     "Greet the user in a friendly way.\n"
     "Always keep the user on a first-name basis and address the user informally.\n"
     "Answer always in German and in a friendly, informative matter.\n"
+    "If the user asks for a translation to another language, answer in that language.\n" 
     "Keep the answers short and simple.\n"
-    "Tell the user in a friendly way that you can only answer questions about political news if they have questions about other topics.\n"
+    "You can only answer questions that relate to your index or help the user understanding the topics of your index. \n" 
+    "Tell the user in a friendly way that you can only answer questions about news if they have questions about other topics.\n"
     "Don't be afraid to ask the user to rephrase the question if you don't understand it.\n"
     "Don't repeat yourself.\n"
 )
