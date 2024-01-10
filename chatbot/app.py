@@ -10,7 +10,7 @@ from llama_index import (
     VectorStoreIndex, 
     set_global_service_context
 )
-#from llama_index.llms import OpenAI
+from llama_index.llms import OpenAI
 from llama_index.text_splitter import SentenceSplitter
 #from theme import CustomTheme
 from LightTheme import light_css
@@ -28,9 +28,9 @@ import scraping
 import time
 import asyncio
 
+
 # use MockLLM and MockEmbedding for testing (it's free); use OpenAI for production
-llm = MockLLM(max_tokens=56)
-embed_model = MockEmbedding(embed_dim=1536)
+llm = OpenAI(model="gpt-3.5-turbo-1106", temperature=0.1)
 
 token_counter = TokenCountingHandler(
     tokenizer=tiktoken.encoding_for_model("gpt-3.5-turbo-1106").encode
@@ -140,9 +140,9 @@ context = (
 
 index = check_rss_feed_and_create_index()
 
-#llm = OpenAI(model="gpt-3.5-turbo-1106", temperature=0.1)
 
-service_context = ServiceContext.from_defaults(llm = llm, embed_model=embed_model, callback_manager=callback_manager)
+
+service_context = ServiceContext.from_defaults(llm = llm, callback_manager=callback_manager)
 set_global_service_context(service_context)
 
 memory = ChatMemoryBuffer.from_defaults(token_limit=1024)
@@ -202,7 +202,8 @@ example_questions=[
 
 
 def main():
-    #openai.api_key = os.environ["OPENAI_API_KEY"]
+    openai.api_key = os.environ["OPENAI_API_KEY"]
+    print(openai.api_key)
 
     chat_interface = gr.ChatInterface(
         fn=response,

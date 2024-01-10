@@ -1,5 +1,5 @@
 //Switch function
-const switchTheme = () => {
+export const switchTheme = () => {
     //Get root element and data-theme value
     const rootElem= document.documentElement
     let dataTheme = rootElem.getAttribute('data-theme'),
