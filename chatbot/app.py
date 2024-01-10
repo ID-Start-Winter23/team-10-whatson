@@ -55,6 +55,8 @@ for article in top_headlines:
            f'Datum: {article["published"]}\n' \
            f'Inhalt: {article["description"]}\n'
 
+
+    
     document = Document(
         text=text,
         metadata={'Link': article["link"]}
@@ -210,7 +212,8 @@ def main():
         undo_btn=None,
         clear_btn=None,
         submit_btn="➤",
-        textbox=gr.Textbox(placeholder="Frage mich etwas..."),
+####### In app.py habe ich nur hier die scale=4 eingefügt, sonst ist alles andere unverändert :) #####################
+        textbox=gr.Textbox(scale=4,placeholder="Frage mich etwas..."),
         examples=example_questions,
         chatbot = gr.Chatbot(
             avatar_images=["ui_elements/avatar_user.png", "ui_elements/avatar_bot.png"],

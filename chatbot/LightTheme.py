@@ -1,22 +1,25 @@
 from gradio.themes.base import Base
 
+#Hier habe ich die Zeilen: 9, 14, 15, 20, 65 geändert. Hab die Farbe ganz leicht angepasst, weil sie nicht so "rein" aussah, 
+#aber kannst du gerne entscheiden, ob du es übernehmen willst -> fffbe3 ist die neue Farbe
+#Und die Zeilen ab 77 sind neu, hier habe ich den hover Effekt eingefügt für den submit Button
 light_css = """
 
 
 :root {
     --font: 'Source Code Pro', monospace !important;
-    --body-background-fill: #f4f1df !important;
+    --body-background-fill: #fffbe3 !important;
     --panel-background-fill: none !important;
     --color-accent-soft: none !important;
     --color-accent: #DB7842 !important;
     --checkbox-background-color-selected: #DB7842 !important;
-    --checkbox-label-background-fill-hover: #f4f1df !important;
-    --checkbox-label-background-fill: #f4f1df !important;
+    --checkbox-label-background-fill-hover: #fffbe3 !important;
+    --checkbox-label-background-fill: #fffbe3 !important;
     --checkbox-label-background-fill: #ffffff !important;
     --form-gap-width: none !important;
     --input-border-width: none !important;
     --input-background-fill: #ffffff !important;
-    --background-fill-secondary: #f4f1df !important;
+    --background-fill-secondary: #fffbe3 !important;
     --button-primary-background-fill-hover: #3d405b !important;
     --button-cancel-background-fill-hover: #DB7842 !important;
     --button-cancel-background-fill: #DB7842 !important;
@@ -59,7 +62,7 @@ div.svelte-1mwvhlq:not(.float){
     flex-grow: 0 !important;}
 
 .container.svelte-tq78c3 .wrap.svelte-tq78c3 {
-    background-color: #f4f1df !important;}
+    background-color: #fffbe3 !important;}
 
 .user.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar{
     color: black !important;
@@ -70,5 +73,18 @@ div.svelte-1mwvhlq:not(.float){
     color: white !important;
     background: #3d405b !important;
 }    
+
+.svelte-cmf5ev:hover {
+    background-color: #db7842 !important;
+    border-radius: 10px !important;
+    color: #ffffff !important;
+}
+
+.svelte-cmf5ev {
+    font-size: large !important;
+}
+.svelte-cmf5ev {
+    border-radius: 7px !important;
+}
 
 """
