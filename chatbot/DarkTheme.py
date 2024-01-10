@@ -1,38 +1,71 @@
-##### noch nichts verändert -> selber code wie LightTheme
-
 from gradio.themes.base import Base
+
+'''
+used colors:
+    #DB7842 <- orange
+    #3d405b <- darkblue
+'''
 
 dark_css = """
 
-
 :root {
-    --font: 'Source Code Pro', monospace !important;
-    --body-background-fill: #f4f1df !important;
-    --panel-background-fill: none !important;
-    --color-accent-soft: none !important;
-    --color-accent: #DB7842 !important;
+    --font: 'Source Code Pro', monospace;
+    --body-text-color: white;
+    --body-background-fill: black;
+    --panel-background-fill: none;
+    --block-background-fill: #3d405b;
+    --block-label-background-fill: #3d405b;
+    --block-label-text-color: #3d405b;
+    --block-label-border-width: 0px;
+    --button-primary-text-color: white;
+    --button-secondary-text-color: white;
+    --button-primary-background-fill: #DB7842;
+    --button-primary-background-fill-hover: #DB7842;
+    --background-fill-secondary: black;
+    --color-accent-soft: black;
+    --text-lg: var(--text-mg);
+    --checkbox-label-background-fill: #3d405b;
+    --checkbox-label-background-fill-hover: #3d405b;
+    --checkbox-label-background-fill-selected: black;
     --checkbox-background-color-selected: #DB7842 !important;
-    --checkbox-label-background-fill-hover: #f4f1df !important;
-    --checkbox-label-background-fill: #f4f1df !important;
-    --checkbox-label-background-fill: #ffffff !important;
+    --table-row-focus: none;
     --form-gap-width: none !important;
-    --input-border-width: none !important;
-    --input-background-fill: #ffffff !important;
-    --background-fill-secondary: #f4f1df !important;
-    --button-primary-background-fill-hover: #3d405b !important;
-    --button-cancel-background-fill-hover: #DB7842 !important;
-    --button-cancel-background-fill: #DB7842 !important;
-    --button-cancel-text-color: black !important;
-    --button-primary-background-fill: #3d405b !important;
-    --button-primary-text-color: #ffffff !important;
-    --border-color-primary: #ffffff !important;
-    --border-color-accent-subdued: #DB7842 !important;
-    --shadow-inset: none !important;
+    --input-border-color: none;
+    --input-background-fill: black;
     --text-lg: var(--text-mg) !important;
+    --checkbox-background-color: black;
+    --border-color-primary: #3d405b;
 }
 
-.dark{
-    --font: 'Source Code Pro', monospace !important;}
+.dark {
+    --font: 'Source Code Pro', monospace;
+    --body-text-color: white;
+    --body-background-fill: black;
+    --panel-background-fill: none;
+    --block-background-fill: #3d405b;
+    --block-label-background-fill: #3d405b;
+    --block-label-text-color: #3d405b;
+    --block-label-border-width: 0px;
+    --button-primary-text-color: white;
+    --button-secondary-text-color: white;
+    --button-primary-background-fill: #DB7842;
+    --button-primary-background-fill-hover: #DB7842;
+    --background-fill-secondary: black;
+    --color-accent-soft: black;
+    --text-lg: var(--text-mg);
+    --checkbox-label-background-fill: #3d405b;
+    --checkbox-label-background-fill-hover: #3d405b;
+    --checkbox-label-background-fill-selected: black;
+    --checkbox-background-color-selected: #DB7842 !important;
+    --table-row-focus: none;
+    --form-gap-width: none !important;
+    --input-border-color: none;
+    --input-background-fill: black;
+    --text-lg: var(--text-mg) !important;
+    --checkbox-background-color: black;
+    --border-color-primary: #3d405b;
+}
+
 
 .message.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar {
     display: auto !important;
@@ -41,15 +74,6 @@ dark_css = """
 
 .compact.svelte-vt1mxs, .panel.svelte-vt1mxs{
     padding: 0px !important;}
-
-div.svelte-1mwvhlq:not(.float){
-    visibility: hidden !important;}
-
-.show-api.svelte-1ax1toq.svelte-1ax1toq.svelte-1ax1toq:hover {
-    color: var(--button-secondary-text-color) !important;}
-
-.built-with.svelte-1ax1toq.svelte-1ax1toq.svelte-1ax1toq:hover {
-    color: var(--button-secondary-text-color) !important;}
 
 .message.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar {
     line-height: var(--line-sm) !important;}
@@ -60,17 +84,18 @@ div.svelte-1mwvhlq:not(.float){
 .panel.svelte-vt1mxs {
     flex-grow: 0 !important;}
 
-.container.svelte-tq78c3 .wrap.svelte-tq78c3 {
-    background-color: #f4f1df !important;}
+.input.svelte-1f354aw.svelte-1f354aw:disabled, textarea.svelte-1f354aw.svelte-1f354aw:disabled {
+    background: black;
+}
 
-.user.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar{
-    color: black !important;
-    background-color: #ffffff !important;
-    border-color: #DB7842 !important;}
+.svelte-cmf5ev:hover {
+    background-color: #DB7842 !important;
+    border-radius: 10px !important;
+}
 
-.bot.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar {
-    color: white !important;
-    background: #3d405b !important;
-}    
+.svelte-cmf5ev {
+    border-radius: 7px !important;
+    font-size: large !important;
+
 
 """

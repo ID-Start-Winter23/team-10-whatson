@@ -14,8 +14,8 @@ from llama_index import (
 from llama_index.text_splitter import SentenceSplitter
 #from theme import CustomTheme
 from LightTheme import light_css
-#from DarkTheme import dark_css
-#from LargeTheme import large_css
+from DarkTheme import dark_css
+from LargeTheme import large_css
 
 from llama_index.memory import ChatMemoryBuffer
 from llama_index.llms import MockLLM
@@ -191,11 +191,23 @@ def response(message, history):
     chat_engine.reset()
 
 
+choice = "Helle Ansicht"
+
+# change theme with radio-buttons and radio_select
+def change_theme(choice):
+    if choice == "Helle Ansicht":
+        return light_css
+    elif choice == "Dunkle Ansicht":
+        return dark_css
+    else:
+        return large_css
+        
+
+# shown below the input
 example_questions=[
-    'Woher stammen deine Infos?', 
     'Was ist heute passiert?',
     'Was ist in Deutschland passiert?',
-    'Was ist in der Welt passiert?']
+    'Woher stammen deine Infos?']
 
 
 
@@ -204,36 +216,41 @@ def main():
 
     chat_interface = gr.ChatInterface(
         fn=response,
-        #theme=custom_theme,
-        css=light_css,
         retry_btn=None,
+        css=change_theme(choice),
         undo_btn=None,
         clear_btn=None,
         submit_btn="➤",
-        textbox=gr.Textbox(placeholder="Frage mich etwas..."),
+        textbox=gr.Textbox(scale=4, placeholder="Frage mich etwas..."),
         examples=example_questions,
         chatbot = gr.Chatbot(
             avatar_images=["ui_elements/avatar_user.png", "ui_elements/avatar_bot.png"],
-            value=[(None, "Willkommen 👋. Mein Name ist Whatson und ich versorge dich mit den aktuellsten politischen Nachrichten.")],)
+            value=[(None, "Willkommen 👋. Mein Name ist Whatson und ich versorge dich mit den aktuellsten Nachrichten.\n \
+                    Wie verwendet man mich? Ganz einfach!\nAuf der linken Seite findest du eine Modusauswahl und die 10 neusten Nachrichten des Tages.👈\n \
+                    Stelle einfach zu den Schlagzeilen Fragen oder benutze die Beispielfragen unterhalb der Eingabe.👇")],)
         )
 
     # blocks
-    with gr.Blocks(title="Whatson", css=light_css) as chatbot:
+    with gr.Blocks(title="Whatson", css=change_theme(choice)) as chatbot:
         with gr.Column():
             with gr.Row(equal_height=False):
-                gr.Image("ui_elements/logo-avatar.png", show_label=False, show_download_button=False, scale=0.3)
+                gr.Image("ui_elements/logo-avatar.png", show_label=False, show_download_button=False, scale=0.25)
             with gr.Row():
                 with gr.Column(scale=0.4):
-                    #### Radio-Buttons für Sprint 2
-                    #gr.Radio(["Helle Ansicht", "Dunkle Ansicht", "Großer Text"], label="Modusauswahl", interactive=True, value="Helle Ansicht")
+                    radio = gr.Radio(["Helle Ansicht", "Dunkle Ansicht", "Großer Text"], label="Modusauswahl", interactive=True, value="Helle Ansicht")
+                    radio.change(fn=change_theme, inputs=radio)
                     gr.Textbox(
                         value=news_text,
                         lines=22,
                         interactive=False,
-                        label=""
+                        label="",
+                        info="Aktuelle Nachrichten"
                     )
                 with gr.Column():
                     chat_interface.render(),
+        #chatbot.load(fn=radio_select, every=0.5)
+    
+
 
     chatbot.queue()
     chatbot.launch(inbrowser=True)

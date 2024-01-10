@@ -1,5 +1,3 @@
-##### noch nichts verändert -> selber code wie LightTheme
-
 from gradio.themes.base import Base
 
 large_css = """
@@ -28,11 +26,50 @@ large_css = """
     --border-color-primary: #ffffff !important;
     --border-color-accent-subdued: #DB7842 !important;
     --shadow-inset: none !important;
-    --text-lg: var(--text-mg) !important;
+    --text-xxs: 12px !important;
+    --text-xs: 15px !important;
+    --text-sm: 18px !important;
+    --text-md: 20px !important;
+    --text-lg: 24px !important;
+    --text-xl: 28px !important;
+    --text-xxl: 30px !important;
 }
 
 .dark{
-    --font: 'Source Code Pro', monospace !important;}
+    --font: 'Source Code Pro', monospace;
+    --body-text-color: white;
+    --body-background-fill: black;
+    --panel-background-fill: none;
+    --border-color-accent: #DB7842;
+    --block-background-fill: #3d405b;
+    --block-label-background-fill: #3d405b;
+    --block-label-text-color: #3d405b;
+    --block-label-border-width: 0px;
+    --button-primary-text-color: white;
+    --button-secondary-text-color: white;
+    --button-primary-background-fill: #DB7842;
+    --button-primary-background-fill-hover: #DB7842;
+    --background-fill-secondary: black;
+    --color-accent-soft: black;
+    --text-lg: var(--text-mg);
+    --checkbox-label-background-fill: #3d405b;
+    --checkbox-label-background-fill-hover: #3d405b;
+    --checkbox-label-background-fill-selected: black;
+    --checkbox-background-color-selected: #DB7842 !important;
+    --table-row-focus: none;
+    --form-gap-width: none !important;
+    --input-border-color: none;
+    --input-background-fill: black;
+    --text-xxs: 12px !important;
+    --text-xs: 15px !important;
+    --text-sm: 18px !important;
+    --text-md: 20px !important;
+    --text-lg: 24px !important;
+    --text-xl: 28px !important;
+    --text-xxl: 30px !important;
+    --checkbox-background-color: black;
+}
+
 
 .message.svelte-1pjfiar.svelte-1pjfiar.svelte-1pjfiar {
     display: auto !important;
@@ -72,5 +109,15 @@ div.svelte-1mwvhlq:not(.float){
     color: white !important;
     background: #3d405b !important;
 }    
+
+.svelte-cmf5ev:hover {
+    border-radius: 10px !important;
+}
+
+.svelte-cmf5ev {
+    border-radius: 7px !important;
+    font-size: large !important;
+    }
+
 
 """
