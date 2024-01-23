@@ -12,10 +12,7 @@ from llama_index import (
 )
 #from llama_index.llms import OpenAI
 from llama_index.text_splitter import SentenceSplitter
-#from theme import CustomTheme
-from LightTheme import light_css
-from DarkTheme import dark_css
-from LargeTheme import large_css
+from theme import css
 
 from llama_index.memory import ChatMemoryBuffer
 from llama_index.llms import MockLLM
@@ -195,7 +192,7 @@ def response(message, history):
 example_questions=[
     'Was ist in Deutschland passiert?',
     'Erzähl mir etwas über ...',
-    'Was ist diese Nachricht: "..." auf ... ?',
+    'Kannst du mir diese Nachricht auf ... übersetzen?',
     'Woher stammen deine Infos?']
 
 
@@ -206,7 +203,7 @@ def main():
     chat_interface = gr.ChatInterface(
         fn=response,
         retry_btn=None,
-        css=light_css,
+        css=css,
         undo_btn=None,
         clear_btn=None,
         submit_btn="➤",
@@ -221,7 +218,7 @@ def main():
         )
 
     # blocks
-    with gr.Blocks(title="Whatson", css=light_css) as chatbot:
+    with gr.Blocks(title="Whatson", css=css) as chatbot:
         with gr.Row():
             with gr.Column(equal_height=False, scale=0.4):
                 gr.Image("ui_elements/logo-avatar.png", show_label=False, show_download_button=False, scale=0.25)
