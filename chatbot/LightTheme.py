@@ -85,6 +85,10 @@ light_css = """
 .compact.svelte-vt1mxs, .panel.svelte-vt1mxs{
     padding: 0px !important;}
 
+div.svelte-e8n7p6{
+    font-size: 16px;
+}
+
 div.svelte-1mwvhlq:not(.float){
     visibility: hidden !important;}
 

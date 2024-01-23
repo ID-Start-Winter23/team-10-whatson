@@ -188,25 +188,14 @@ def response(message, history):
     )
 
     # try to reduce history size and cost
-    chat_engine.reset()
-
-
-choice = "Helle Ansicht"
-
-# change theme with radio-buttons and radio_select
-def change_theme(choice):
-    if choice == "Helle Ansicht":
-        return light_css
-    elif choice == "Dunkle Ansicht":
-        return dark_css
-    else:
-        return large_css
+    #chat_engine.reset()
         
 
 # shown below the input
 example_questions=[
-    'Was ist heute passiert?',
     'Was ist in Deutschland passiert?',
+    'Erzähl mir etwas über ...',
+    'Was ist diese Nachricht: "..." auf ... ?',
     'Woher stammen deine Infos?']
 
 
@@ -217,38 +206,35 @@ def main():
     chat_interface = gr.ChatInterface(
         fn=response,
         retry_btn=None,
-        css=change_theme(choice),
+        css=light_css,
         undo_btn=None,
         clear_btn=None,
         submit_btn="➤",
         textbox=gr.Textbox(scale=4, placeholder="Frage mich etwas..."),
         examples=example_questions,
         chatbot = gr.Chatbot(
+            show_copy_button=True,
             avatar_images=["ui_elements/avatar_user.png", "ui_elements/avatar_bot.png"],
             value=[(None, "Willkommen 👋. Mein Name ist Whatson und ich versorge dich mit den aktuellsten Nachrichten.\n \
-                    Wie verwendet man mich? Ganz einfach!\nAuf der linken Seite findest du eine Modusauswahl und die 10 neusten Nachrichten des Tages.👈\n \
+                    Wie verwendet man mich? Ganz einfach!\nAuf der linken Seite findest du die 10 neusten Nachrichten des Tages(man kann hier nach unten scrollen).👈\n \
                     Stelle einfach zu den Schlagzeilen Fragen oder benutze die Beispielfragen unterhalb der Eingabe.👇")],)
         )
 
     # blocks
-    with gr.Blocks(title="Whatson", css=change_theme(choice)) as chatbot:
-        with gr.Column():
-            with gr.Row(equal_height=False):
+    with gr.Blocks(title="Whatson", css=light_css) as chatbot:
+        with gr.Row():
+            with gr.Column(equal_height=False, scale=0.4):
                 gr.Image("ui_elements/logo-avatar.png", show_label=False, show_download_button=False, scale=0.25)
-            with gr.Row():
-                with gr.Column(scale=0.4):
-                    radio = gr.Radio(["Helle Ansicht", "Dunkle Ansicht", "Großer Text"], label="Modusauswahl", interactive=True, value="Helle Ansicht")
-                    radio.change(fn=change_theme, inputs=radio)
-                    gr.Textbox(
-                        value=news_text,
-                        lines=22,
-                        interactive=False,
-                        label="",
-                        info="Aktuelle Nachrichten"
-                    )
-                with gr.Column():
-                    chat_interface.render(),
-        #chatbot.load(fn=radio_select, every=0.5)
+                gr.Textbox(
+                    value=news_text,
+                    lines=22,
+                    interactive=False,
+                    label="",
+                    info="Aktuelle Nachrichten"
+                )
+            with gr.Column():
+                chat_interface.render()
+    
     
 
 
